@@ -1,0 +1,13 @@
+body{
+    background: rgb(227, 228, 228);
+}
+p{
+    text-align: center;
+    color:black;
+    font-size: 30px;
+}
+img{
+    display: block;
+    width: 50px;
+    margin: 50px auto;
+}
