@@ -15,6 +15,9 @@ var imagemin = require('gulp-imagemin');
 //加版本号
 var assetRev = require('gulp-asset-rev')
 
+//混淆
+var obfuscate = require('gulp-javascript-obfuscator')
+
 // 输入路径
 var distName = 'dist/'
 var srcName = "src/"
@@ -70,17 +73,13 @@ gulp.task('jscompress', function (cb) {
     // 1. 找到文件
     return gulp.src(`${srcName}js/*.*`)
         .pipe(babel({presets:['es2015']}))
-        .pipe(uglify())
+        .pipe(uglify({
+            mangle: {toplevel:true}, // 这个是简单混淆 就是变量变成单个字母
+            compress: true //类型：Boolean 默认：true 是否完全压缩
+        }))
+        .pipe(obfuscate()) //混淆
         .pipe(gulp.dest(`${distName}js`)).on("end", cb); // 3. 另存压缩后的文件
 });
-
-//wow无法babel，会导致WOW变量私有化
-// gulp.task('jscompress1', function (cb) {
-//     // 1. 找到文件
-//     return gulp.src(`${srcName}js/wow.js`)
-//         .pipe(uglify())
-//         .pipe(gulp.dest(`${distName}js`)).on("end", cb); // 3. 另存压缩后的文件
-// });
 
 // 图片处理
 gulp.task('imagemin', function (cb) {
@@ -99,16 +98,6 @@ gulp.task('fonts', function (cb) {
     return gulp.src(fontsSrc)
         .pipe(gulp.dest(`${distName}fonts`)).on("end", cb);
 });
-
-// config差异文件迁移，bootstrap配置json迁移
-// gulp.task('configDest', function (cb) {
-//     var configSrc = `${srcName}config/*.json`;
-//     // var configSrc2 = './config.json';
-//     return gulp.src(configSrc).pipe(gulp.dest(`${distName}config`)).on("end", cb);
-//     // function () {
-//     //     gulp.src(configSrc2).pipe(gulp.dest(distName)).on("end", cb)
-//     // }
-// });
 
 //最后打包
 gulp.task('build', gulp.series('clean', 'htmlmin', 'fonts', 'csscompress', 'jscompress', 'imagemin'));
