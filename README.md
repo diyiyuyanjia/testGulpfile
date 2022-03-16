@@ -1,5 +1,5 @@
 
-1. 命令
+## 命令
     
     初始化（初始化不用使用yarn，！！！会导致gulp-imagemin报错）
     ```sh
@@ -40,4 +40,5 @@
 
 
 ## 兼容
-    监听的没有必要做了，使用vsCode的小伙伴直接使用插件Live Server就可以啦，安装好插件右键open with live server就可以啦
+    监听的没有必要做了，使用vsCode的小伙伴直接使用插件Live Server就可以啦
+    安装好插件右键open with live server就可以啦
