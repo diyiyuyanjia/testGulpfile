@@ -1,14 +1,5 @@
-1. 去除html引入各类文件导致缓存
-    > node_modules/gulp-asset-rev/index.js
-    > 80行 src = src.replace(verStr, '').replace(/(\.[^\.]+)$/, verStr + "$1"); 修改为  src=src+"?v="+verStr;
 
-2. gulp-imagemin
-    > 如果gulp-imagemin 报错 write err Or Fn is not function 请npm下载指定版本 npm install gulp-imagemin@7.1.0 --save--dev
-
-3. wow
-    > wow无法通过babel转为es2015，原因是（window）this指针丢失，导致WOW undefined,如果更新wow.js,需要把call(this) => call(window),把this指针换成window即可解决
-
-4. 命令
+1. 命令
     
     初始化（初始化不用使用yarn，！！！会导致gulp-imagemin报错）
     ```sh
