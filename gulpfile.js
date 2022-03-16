@@ -35,7 +35,7 @@ gulp.task('clean', function (cb) {
 // 在命令行使用 gulp csscompress 启动此任务
 gulp.task('csscompress', function (cb) {
     // 1. 找到文件
-    return gulp.src(`${srcName}/css/*.*`)
+    return gulp.src(`${srcName}/css/*`)
         .pipe(rev()) //文件名加MD5后缀
         // 2. 压缩文件
         .pipe(cleanCSS())
@@ -52,7 +52,7 @@ gulp.task('csscompress', function (cb) {
 // 在命令行使用 gulp jscompress 启动此任务
 gulp.task('jscompress', function (cb) {
     // 1. 找到文件
-    return gulp.src(`${srcName}js/*.*`)
+    return gulp.src([`${srcName}js/*`])
         .pipe(babel({presets:['es2015']}))
         .pipe(uglify({
             mangle: {toplevel:true}, // 这个是简单混淆 就是变量变成单个字母
@@ -62,7 +62,7 @@ gulp.task('jscompress', function (cb) {
         .pipe(obfuscate()) //混淆
         .pipe(gulp.dest(`${distName}js`))
         .pipe(rev.manifest('rev-js-manifest.json'))
-        .pipe(gulp.dest('dist/rev'))
+        .pipe(gulp.dest(`${distName}rev`))
         .on("end", cb); // 3. 另存压缩后的文件
 });
 
@@ -74,10 +74,7 @@ gulp.task('imagemin', function (cb) {
             imagemin.mozjpeg({quality: 75, progressive: true}),
             imagemin.optipng({optimizationLevel: 5})
         ]))
-        .pipe(rev()) //文件名加MD5后缀
         .pipe(gulp.dest(`${distName}image`))
-        .pipe(rev.manifest('rev-image-manifest.json'))
-        .pipe(gulp.dest('dist/rev'))
         .on("end", cb);
 });
 
@@ -88,7 +85,7 @@ gulp.task('fonts', function (cb) {
         .pipe(rev()) //文件名加MD5后缀
         .pipe(gulp.dest(`${distName}fonts`))
         .pipe(rev.manifest('rev-fonts-manifest.json'))
-        .pipe(gulp.dest('dist/rev'))
+        .pipe(gulp.dest(`${distName}rev`))
         .on("end", cb);
 });
 
@@ -105,7 +102,7 @@ gulp.task('htmlmin', function (cb) {
         minifyJS: true,//压缩页面JS
         minifyCSS: true//压缩页面CSS
     };
-    return gulp.src(['dist/rev/*.json', `${srcName}*.html`])
+    return gulp.src([`${distName}rev/*.json`, `${srcName}*.html`])
     .pipe(revCollector({
         replaceReved: true, // 设置replaceReved标识, 用来说明模板中已经被替换的文件是否还能再被替换,默认是false
     }))
@@ -113,5 +110,11 @@ gulp.task('htmlmin', function (cb) {
     .pipe(gulp.dest(distName)).on("end", cb);
 });
 
+// 删除dist/rev
+gulp.task('deleteRev', function (cb) {
+    return gulp.src('./dist/rev', { read: false, allowEmpty: true })
+        .pipe(clean()).on("end", cb);
+});
+
 //最后打包
-gulp.task('build', gulp.series('clean', 'fonts', 'csscompress', 'jscompress', 'imagemin', 'htmlmin' ));
+gulp.task('build', gulp.series('clean', 'fonts','imagemin', 'csscompress', 'jscompress', 'htmlmin', 'deleteRev' ));
