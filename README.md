@@ -37,3 +37,7 @@
     [18:19:47] Finished 'build' after 370 ms
     Done in 1.54s.
     ```
+
+
+## 兼容
+    监听的没有必要做了，使用vsCode的小伙伴直接使用插件Live Server就可以啦，安装好插件右键open with live server就可以啦
